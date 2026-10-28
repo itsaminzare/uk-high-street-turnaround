@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Issue Tree Studio</title>
+<meta name="description" content="A structured problem-solving workspace: define the question, build a MECE issue tree with hypotheses, prioritise options and write a pyramid storyline.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314213d'/%3E%3Cpath d='M9 16h5M14 9v14M14 9h8M14 16h8M14 23h8' stroke='%23fbfaf7' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,500;1,400&display=swap">
+<style>
+:root{
+  --ink:#14213d; --ink-2:#4a5368; --muted:#7d8597; --paper:#fbfaf7; --card:#ffffff; --line:#e4e1d9; --line-2:#cfcbc0;
+  --accent:#2a78d6; --accent-soft:#e8f0fb;
+  --win:#1baf7a; --bet:#2a78d6; --fill:#8a8f9c; --pit:#eb6834;
+  --ok:#1f7a4a; --ok-bg:#e5f4ec; --bad:#b3402a; --bad-bg:#fbe9e4; --open:#6b7280; --open-bg:#eef0f3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --serif:"IBM Plex Serif",Georgia,serif;
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* top bar */
+header.top{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;display:flex;align-items:center;gap:16px;padding:10px 20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.01em;font-size:16px;white-space:nowrap}
+.brand svg{width:26px;height:26px}
+.title-in{flex:1 1 260px;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:8px;color:#fff;padding:7px 12px;font-weight:600}
+.title-in::placeholder{color:rgba(255,255,255,.55)}
+.title-in:focus{background:rgba(255,255,255,.14);outline:none;border-color:rgba(255,255,255,.4)}
+.top-actions{display:flex;gap:6px;flex-wrap:wrap}
+.tbtn{background:transparent;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:6px 12px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tbtn:hover{background:rgba(255,255,255,.1)}
+.tbtn.solid{background:#fff;color:var(--ink);border-color:#fff}
+.tbtn.solid:hover{background:#e9edf5}
+.saved{font-size:12.5px;color:rgba(255,255,255,.65);white-space:nowrap}
+
+/* steps */
+nav.steps{display:flex;gap:4px;padding:14px 20px 0;max-width:1240px;margin:0 auto;overflow-x:auto}
+.step{display:flex;align-items:center;gap:10px;border:0;background:none;padding:10px 16px 12px;cursor:pointer;color:var(--ink-2);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
+.step b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--line);color:var(--ink-2);font-size:12.5px}
+.step[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.step[aria-selected="true"] b{background:var(--ink);color:#fff}
+.rule{height:1px;background:var(--line);max-width:1240px;margin:0 auto}
+main{max-width:1240px;margin:0 auto;padding:24px 20px 80px}
+section.panel[hidden]{display:none}
+.intro{max-width:70ch;color:var(--ink-2);margin:0 0 22px}
+.intro b{color:var(--ink)}
+h2{font-size:22px;letter-spacing:-.015em;margin:0 0 6px}
+h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+
+/* define */
+.define{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:28px;align-items:start}
+.field{display:grid;gap:6px;margin-bottom:16px}
+.field label{font-weight:600;font-size:14px}
+.field small{color:var(--muted);font-size:12.5px}
+textarea,input.in{width:100%;border:1.5px solid var(--line);border-radius:8px;background:var(--card);padding:9px 12px;resize:vertical;min-height:42px}
+textarea:focus,input.in:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+textarea.big{font:500 18px/1.4 var(--serif);min-height:84px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.smart{position:sticky;top:76px}
+.smart ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.smart li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start}
+.tick{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--open-bg);color:var(--open)}
+.tick.on{background:var(--ok-bg);color:var(--ok)}
+.smart li span b{display:block;font-size:14px}
+.smart li span{font-size:13px;color:var(--ink-2)}
+.score{font:600 13px var(--sans);color:var(--ink-2);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+
+/* tree */
+.tree-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.seg{display:inline-flex;background:var(--line);border-radius:8px;padding:3px}
+.seg button{border:0;background:none;border-radius:6px;padding:6px 14px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(20,33,61,.15)}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:600;background:var(--open-bg);color:var(--open)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.pill i{font-style:normal}
+.root-q{font:500 18px/1.4 var(--serif);background:var(--ink);color:#fff;border-radius:var(--r);padding:14px 18px;margin-bottom:6px}
+.root-q small{display:block;font:600 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px}
+ul.tree,ul.tree ul{list-style:none;margin:0;padding:0}
+ul.tree ul{margin-left:26px;padding-left:18px;border-left:1.5px solid var(--line-2)}
+ul.tree li{position:relative;padding-top:10px}
+ul.tree ul > li::before{content:"";position:absolute;left:-18px;top:32px;width:16px;border-top:1.5px solid var(--line-2)}
+.node{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;display:grid;gap:8px}
+.node.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.node-row{display:flex;gap:8px;align-items:flex-start}
+.tag{flex:none;font:700 12px var(--sans);color:var(--muted);padding-top:9px;min-width:26px}
+.node textarea{border:1px solid transparent;background:transparent;padding:6px 8px;min-height:36px;font-weight:600;resize:none;overflow:hidden}
+.node textarea:hover{border-color:var(--line)}
+.node textarea:focus{background:var(--card)}
+.node-tools{display:flex;gap:4px;flex:none}
+.ibtn{border:1px solid var(--line);background:var(--card);border-radius:7px;padding:5px 9px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+.ibtn:hover{border-color:var(--ink-2);color:var(--ink)}
+.ibtn.danger:hover{border-color:var(--bad);color:var(--bad)}
+.hyp{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px;border-radius:8px;background:#f7f6f2}
+.hyp textarea{font-weight:500;font-style:italic;min-height:34px}
+.hyp .ev{grid-column:1/-1}
+.hyp .ev textarea{font-style:normal;font-size:13.5px;color:var(--ink-2)}
+.hyp select{border:1px solid var(--line);border-radius:7px;padding:5px 8px;background:var(--card);font-weight:600;font-size:13px;height:34px}
+.hyp-label{grid-column:1/-1;font:700 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:-6px}
+.mece{margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);padding:8px 10px;border:1px dashed var(--line-2);border-radius:8px}
+.mece label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.mece b{color:var(--ink)}
+.add-top{margin-top:14px}
+.map-wrap{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:auto;padding:12px}
+.map-wrap svg{display:block}
+
+/* prioritise */
+.prio{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,1fr);gap:24px;align-items:start}
+table.opts{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+table.opts th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line);background:#f7f6f2}
+table.opts td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.opts tr:last-child td{border-bottom:0}
+table.opts input.in{min-height:36px;padding:6px 10px}
+.num{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700}
+.rng{display:flex;align-items:center;gap:8px}
+.rng input{width:64px;accent-color:var(--ink)}
+textarea.opt-name{border:1px solid transparent;background:transparent;padding:6px 8px;min-height:36px;resize:none;overflow:hidden;font-weight:500}
+textarea.opt-name:hover{border-color:var(--line)}
+textarea.opt-name:focus{border-color:var(--accent);background:var(--card)}
+.rng output{font-weight:700;width:12px}
+.q{font-size:12.5px;font-weight:700;white-space:nowrap}
+.q::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:currentColor;vertical-align:1px}
+.q.win{color:#0f7c56}.q.bet{color:var(--bet)}.q.fill{color:#5d6370}.q.pit{color:#c2501f}
+.matrix{position:sticky;top:76px}
+.matrix svg{width:100%;height:auto;display:block}
+.legend-note{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+/* synthesise */
+.synth{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.kl{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:12px;margin-bottom:12px;display:grid;gap:8px}
+.kl-head{display:flex;gap:8px;align-items:center}
+.kl-head b{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;flex:1}
+.pyr{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;position:sticky;top:76px}
+.pyr .gt{background:var(--ink);color:#fff;border-radius:8px;padding:16px 18px;font:500 18px/1.4 var(--serif);text-align:center}
+.pyr .gt:empty::before{content:"Your answer, in one sentence";opacity:.5}
+.pyr .stem{width:1.5px;height:18px;background:var(--line-2);margin:0 auto}
+.pyr .lines{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));position:relative;padding-top:18px;border-top:1.5px solid var(--line-2)}
+.pyr .line{background:var(--accent-soft);border-radius:8px;padding:12px;font-weight:600;font-size:14px}
+.pyr .line ul{margin:8px 0 0;padding-left:16px;font-weight:400;font-size:13px;color:var(--ink-2)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.btn{border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.btn:hover{background:#22325a}
+.btn.line{background:var(--card);color:var(--ink)}
+.btn.line:hover{background:#f1efe9}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:40}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+footer.foot{max-width:1240px;margin:0 auto;padding:0 20px 40px;color:var(--muted);font-size:12.5px}
+footer.foot a{color:inherit}
+
+@media (max-width:700px){
+  header.top{position:static;padding:10px 14px;gap:10px}
+  .top-actions{width:100%}
+  .tbtn{padding:5px 10px;font-size:12.5px}
+  .saved{order:3}
+  .smart,.matrix,.pyr{top:0}
+}
+@media (max-width:900px){
+  .define,.prio,.synth{grid-template-columns:1fr}
+  .smart,.matrix,.pyr{position:static}
+  .two{grid-template-columns:1fr}
+  ul.tree ul{margin-left:8px;padding-left:12px}
+  ul.tree ul > li::before{left:-12px;width:10px}
+  .node-row{flex-wrap:wrap}
+  .node-tools{width:100%;justify-content:flex-end}
+  table.opts thead{display:none}
+  table.opts tr{display:grid;grid-template-columns:30px 1fr;gap:6px 10px;padding:10px;border-bottom:1px solid var(--line)}
+  table.opts td{border:0;padding:0}
+  table.opts td:nth-child(n+3){grid-column:2}
+}
+@media print{
+  header.top,nav.steps,.rule,.toolbar,.node-tools,.ibtn,.add-top,.seg,footer.foot{display:none!important}
+  section.panel[hidden]{display:block!important}
+  section.panel{break-after:page}
+  .smart,.matrix,.pyr{position:static}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#fbfaf7" opacity=".12"/><path d="M8 16h5M13 9v14M13 9h10M13 16h10M13 23h10" stroke="#fbfaf7" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+    Issue Tree Studio
+  </div>
+  <label class="sr" for="projTitle">Project title</label>
+  <input class="title-in" id="projTitle" placeholder="Untitled problem">
+  <span class="saved" id="saved" aria-live="polite">Saved</span>
+  <div class="top-actions">
+    <button class="tbtn" data-act="example">Load example</button>
+    <button class="tbtn" data-act="new">New</button>
+    <button class="tbtn" data-act="import">Import</button>
+    <button class="tbtn" data-act="export-json">Save file</button>
+    <button class="tbtn solid" data-act="export-md">Export Markdown</button>
+  </div>
+  <input type="file" id="fileIn" accept="application/json,.json" hidden>
+</header>
+
+<nav class="steps" role="tablist" aria-label="Steps">
+  <button class="step" role="tab" data-step="define" aria-selected="true"><b>1</b>Define</button>
+  <button class="step" role="tab" data-step="structure" aria-selected="false"><b>2</b>Structure</button>
+  <button class="step" role="tab" data-step="prioritise" aria-selected="false"><b>3</b>Prioritise</button>
+  <button class="step" role="tab" data-step="synthesise" aria-selected="false"><b>4</b>Synthesise</button>
+</nav>
+<div class="rule"></div>
+
+<main>
+  <!-- 1. DEFINE -->
+  <section class="panel" id="p-define" role="tabpanel">
+    <h2>Define the problem</h2>
+    <p class="intro">Turn a vague worry into a question you can answer. A good key question is <b>specific</b>, <b>measurable</b>, <b>action-oriented</b>, <b>relevant</b> to a decision-maker and <b>time-bound</b>. The checklist updates as you type.</p>
+    <div class="define">
+      <div>
+        <div class="field"><label for="f-situation">Situation</label><small>What is happening, and why does it matter now?</small><textarea id="f-situation" data-f="situation" rows="3"></textarea></div>
+        <div class="field"><label for="f-question">Key question</label><small>The one question the work must answer.</small><textarea class="big" id="f-question" data-f="question" rows="2"></textarea></div>
+        <div class="two">
+          <div class="field"><label for="f-decider">Decision-maker</label><small>Who acts on the answer?</small><input class="in" id="f-decider" data-f="decider"></div>
+          <div class="field"><label for="f-deadline">Deadline</label><small>By when must it be achieved?</small><input class="in" id="f-deadline" data-f="deadline"></div>
+        </div>
+        <div class="field"><label for="f-success">Success criteria</label><small>How will you know it worked? Use numbers.</small><textarea id="f-success" data-f="success" rows="2"></textarea></div>
+        <div class="two">
+          <div class="field"><label for="f-scopein">In scope</label><textarea id="f-scopein" data-f="scopeIn" rows="2"></textarea></div>
+          <div class="field"><label for="f-scopeout">Out of scope</label><textarea id="f-scopeout" data-f="scopeOut" rows="2"></textarea></div>
+        </div>
+        <div class="field"><label for="f-constraints">Constraints</label><small>Budget, time, powers, politics.</small><textarea id="f-constraints" data-f="constraints" rows="2"></textarea></div>
+      </div>
+      <aside class="card smart" aria-label="SMART check">
+        <h3>Is the question SMART?</h3>
+        <ul id="smartList"></ul>
+        <div class="score" id="smartScore"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 2. STRUCTURE -->
+  <section class="panel" id="p-structure" role="tabpanel" hidden>
+    <div class="tree-head">
+      <div>
+        <h2>Structure it as an issue tree</h2>
+        <p class="intro" style="margin:0">Break the question into branches that don't overlap and together cover everything (<b>MECE</b>). Give each branch a <b>hypothesis</b> to test, then record the evidence and whether it held up.</p>
+      </div>
+      <div style="display:grid;gap:8px;justify-items:end">
+        <div class="seg" role="group" aria-label="Tree view">
+          <button data-view="edit" aria-pressed="true">Edit</button>
+          <button data-view="map" aria-pressed="false">Map</button>
+        </div>
+        <div class="stats" id="treeStats"></div>
+      </div>
+    </div>
+    <div id="treeEdit">
+      <div class="root-q"><small>Key question</small><span id="rootQ"></span></div>
+      <ul class="tree" id="tree"></ul>
+      <button class="btn line add-top" data-act="add-branch">+ Add branch</button>
+    </div>
+    <div id="treeMap" class="map-wrap" hidden></div>
+  </section>
+
+  <!-- 3. PRIORITISE -->
+  <section class="panel" id="p-prioritise" role="tabpanel" hidden>
+    <h2>Prioritise the options</h2>
+    <p class="intro">Score each option for <b>impact</b> on the goal and <b>ease</b> (cost, speed, control). Scores of 3 or more count as high. Do the <b>quick wins</b> now, plan the <b>big bets</b>, keep the cheap <b>fill-ins</b>, and drop the <b>money pits</b>.</p>
+    <div class="prio">
+      <div>
+        <table class="opts">
+          <thead><tr><th style="width:36px">#</th><th>Option</th><th>Impact</th><th>Ease</th><th>Quadrant</th><th></th></tr></thead>
+          <tbody id="optRows"></tbody>
+        </table>
+        <div class="toolbar">
+          <button class="btn line" data-act="add-option">+ Add option</button>
+          <button class="btn line" data-act="options-from-tree">Add options from supported hypotheses</button>
+        </div>
+      </div>
+      <div class="card matrix">
+        <h3>Impact / ease matrix</h3>
+        <div id="matrix"></div>
+        <p class="legend-note">Numbers match the table. Points with the same scores are spread slightly so they stay readable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SYNTHESISE -->
+  <section class="panel" id="p-synthesise" role="tabpanel" hidden>
+    <h2>Synthesise the storyline</h2>
+    <p class="intro">Lead with the answer. Write the <b>governing thought</b> (your recommendation in one sentence), then 2–4 <b>key lines</b> that each support it, each backed by evidence. This is the pyramid principle: the reader gets the answer first and the reasons second.</p>
+    <div class="synth">
+      <div>
+        <div class="field"><label for="f-gt">Governing thought</label><textarea class="big" id="f-gt" data-s="gt" rows="2"></textarea></div>
+        <div id="klList"></div>
+        <div class="toolbar">
+          <button class="btn line" data-act="add-kl">+ Add key line</button>
+          <button class="btn line" data-act="kl-from-tree">Draft from the issue tree</button>
+        </div>
+      </div>
+      <div class="pyr" aria-label="Storyline preview">
+        <h3>Preview</h3>
+        <div class="gt" id="pyrGt"></div>
+        <div class="stem"></div>
+        <div class="lines" id="pyrLines"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="foot">Issue Tree Studio · part of <a href="../">UK High Street Turnaround</a> · Your work is saved in this browser only. Use <b>Save file</b> to keep a copy.</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="issue-tree-studio.v1";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+
+/* ---------- example: the UK high street case ---------- */
+function node(text,hyp,status,evidence,children,mece){return {id:uid(),text:text,hyp:hyp||"",status:status||"",evidence:evidence||"",children:children||[],mece:mece||{ex:false,co:false}}}
+function example(){
+  return {
+    title:"UK high street turnaround: Northbridge",
+    define:{
+      situation:"Northbridge (an illustrative northern town) has ~18% of town-centre shops empty, against a GB average of 14%. Footfall is flat to falling, and small independents lose their 40% business rates relief in April 2026.",
+      question:"How can Northbridge Council bring town-centre shop vacancy down from about 18% to 14% by 2030, while increasing footfall, using its existing powers and about £5m of capital?",
+      decider:"Council leader and cabinet",
+      deadline:"2030",
+      success:"Vacancy ≤ 14% by 2030; persistent vacancy (2+ years) halved; footfall above the 2025 baseline; one new non-retail anchor open.",
+      scopeIn:"Town-centre units; council powers (planning, rental auctions, grants, own property, events, parking).",
+      scopeOut:"National tax policy, out-of-town retail parks, online retail itself.",
+      constraints:"~£5m capital over five years; most units privately owned; visible results needed within 12 months."
+    },
+    tree:[
+      node("Demand: are there enough customers?","",
+        "","",[
+        node("How much spending has moved online for good?","The shift online is structural, so shopping alone can't refill the centre.","supported","Online share 27.5% in 2025 vs 19.2% in 2019; 72% of the pandemic jump has stuck (ONS J4MC)."),
+        node("Are fewer people visiting the centre?","Footfall is still falling, so demand won't recover by itself.","supported","UK footfall −0.8% in 2025, −2.9% in December (BRC–Sensormatic).")
+      ],{ex:true,co:true}),
+      node("Supply: is there the right amount and kind of space?","","","",[
+        node("Does the town have more retail space than it can support?","Struggling towns have more retail space than local spending supports.","supported","Newport, Wigan, Middlesbrough have >2× the retail space per person of Brighton or Liverpool (Centre for Cities, 2025)."),
+        node("Which formats are still in demand?","Convenient formats win; enclosed centres and high streets lag.","supported","Retail parks 11.3% → 7.6% vacancy; high streets 14.5% → 14.0%; shopping centres 19.4% → 17.7% (BRC–LDC, 2021–2023).")
+      ],{ex:true,co:true}),
+      node("Cost: can occupiers afford the space?","","","",[
+        node("How are business rates changing for small shops?","The 2026 reform lowers costs for small shops.","refuted","£30k rateable value shop: £8,982 (2025/26) → £11,460 (2026/27), +28%, because the lower multiplier replaces the 40% relief."),
+        node("Who is closing: chains or independents?","Chains leaving is the main cause of closures.","refuted","Independents were 84% of 2024 closures (11,341 of 13,479; Centre for Retail Research).")
+      ],{ex:true,co:true}),
+      node("Activation: is anyone actively filling empty units?","","","",[
+        node("What powers exist to bring long-term empty units back?","The council has a new tool to force long-term empty units into use.","supported","High Street Rental Auctions (since 2 Dec 2024): 1–5 year leases on units empty > 1 year, no landlord consent needed."),
+        node("What brings people in besides shopping?","Strong centres draw people with food and leisure.","supported","Food ≈ £1 in £4 spent in York and Edinburgh vs ≈ £1 in £10 in Bradford, Stoke, Wigan (Centre for Cities).")
+      ],{ex:true,co:false})
+    ],
+    meceRoot:{ex:true,co:true},
+    options:[
+      {id:uid(),name:"High Street Rental Auctions on units empty > 1 year",impact:4,ease:4},
+      {id:uid(),name:"2026/27 rates transition grant for small independents",impact:3,ease:3},
+      {id:uid(),name:"Shrink the retail core; convert the edges to homes and services",impact:5,ease:2},
+      {id:uid(),name:"Food and leisure anchor (market hall)",impact:4,ease:2},
+      {id:uid(),name:"Meanwhile-use and pop-up programme",impact:2,ease:5},
+      {id:uid(),name:"Town-centre data dashboard",impact:2,ease:4},
+      {id:uid(),name:"Year-round events programme",impact:2,ease:3},
+      {id:uid(),name:"Free parking",impact:1,ease:2}
+    ],
+    synth:{
+      gt:"Northbridge should shrink its retail core and fill the rest of the centre with reasons to visit and to live there. Shopping alone will not bring people back.",
+      lines:[
+        {id:uid(),text:"Right-size the centre: there is too much retail space for the spending that is left",support:"27.5% of retail spending is now online\nStruggling towns have >2× the retail space per person\nRetail parks recovered; high streets did not"},
+        {id:uid(),text:"Fill empty units fast with the council's new powers",support:"High Street Rental Auctions on units empty > 1 year\nPop-ups and meanwhile use\nA rates transition grant: small shops face a 28% rise in 2026/27"},
+        {id:uid(),text:"Give people reasons to come that the internet can't replace",support:"Food is £1 in £4 in thriving centres vs £1 in £10 in struggling ones\nA market-hall anchor and year-round events\nNew homes in the town centre"}
+      ]
+    }
+  };
+}
+function blank(){return {title:"",define:{situation:"",question:"",decider:"",deadline:"",success:"",scopeIn:"",scopeOut:"",constraints:""},tree:[node("","","","",[])],meceRoot:{ex:false,co:false},options:[],synth:{gt:"",lines:[{id:uid(),text:"",support:""}]}}}
+
+/* ---------- state + storage ---------- */
+var state, step="define", view="edit", selected=null, saveTimer=null;
+function load(){
+  try{var raw=localStorage.getItem(KEY); if(raw){var d=JSON.parse(raw); if(d&&d.define&&d.tree)return d}}catch(e){}
+  return example();
+}
+function save(){
+  $("#saved").textContent="Saving…";
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){
+    try{localStorage.setItem(KEY,JSON.stringify(state));$("#saved").textContent="Saved in this browser"}
+    catch(e){$("#saved").textContent="Not saved (storage blocked). Use Save file"}
+  },300);
+}
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove("show")},2200)}
+
+/* ---------- DEFINE ---------- */
+function smartChecks(d){
+  var q=(d.question||"").trim();
+  return [
+    {k:"Specific",on:q.length>=40&&/\?$/.test(q),tip:"A full question (40+ characters) ending in “?”, naming who and what."},
+    {k:"Measurable",on:/\d/.test(q+" "+d.success),tip:"A number or % in the question or success criteria."},
+    {k:"Action-oriented",on:/^(how|what should|which|should|where should)\b/i.test(q),tip:"Starts with “How…”, “What should…” or “Should…”: it asks what to do, not why."},
+    {k:"Relevant",on:(d.decider||"").trim().length>2,tip:"Names the decision-maker who will act on it."},
+    {k:"Time-bound",on:(d.deadline||"").trim().length>0||/\b(19|20)\d\d\b|\bby\b/i.test(q),tip:"A deadline or a date in the question."}
+  ];
+}
+function renderSmart(){
+  var c=smartChecks(state.define), n=c.filter(function(x){return x.on}).length;
+  $("#smartList").innerHTML=c.map(function(x){return '<li><div class="tick'+(x.on?' on':'')+'" aria-hidden="true">'+(x.on?'✓':x.k[0])+'</div><span><b>'+x.k+(x.on?' <span class="sr">(met)</span>':' <span class="sr">(not yet)</span>')+'</b>'+esc(x.tip)+'</span></li>'}).join("");
+  $("#smartScore").textContent=n+" of 5 met"+(n===5?". A strong key question.":"");
+}
+function renderDefine(){
+  $$("[data-f]").forEach(function(el){var k=el.getAttribute("data-f"); if(document.activeElement!==el)el.value=state.define[k]||""});
+  renderSmart();
+}
+
+/* ---------- STRUCTURE ---------- */
+function walk(list,fn,parent){list.forEach(function(n,i){fn(n,parent,i);walk(n.children,fn,n)})}
+function find(id){var hit=null;walk(state.tree,function(n,p,i){if(n.id===id)hit={n:n,p:p,i:i}});return hit}
+function siblingsOf(hit){return hit.p?hit.p.children:state.tree}
+function statusPill(s){return s==="supported"?'<span class="pill ok"><i>✓</i>Supported</span>':s==="refuted"?'<span class="pill bad"><i>✕</i>Refuted</span>':'<span class="pill"><i>?</i>Open</span>'}
+function renderStats(){
+  var c={supported:0,refuted:0,open:0};
+  walk(state.tree,function(n){if(n.hyp.trim()){c[n.status==="supported"?"supported":n.status==="refuted"?"refuted":"open"]++}});
+  $("#treeStats").innerHTML='<span class="pill ok">'+c.supported+' supported</span><span class="pill bad">'+c.refuted+' refuted</span><span class="pill">'+c.open+' open</span>';
+}
+function treeHTML(list,parentPath,depth){
+  return list.map(function(n,i){
+    var p=depth===0?String.fromCharCode(65+i):(depth===1?parentPath+(i+1):parentPath+"."+(i+1));
+    var hasHyp=n.hyp!==""||n._showHyp;
+    var h='<li><div class="node'+(selected===n.id?' sel':'')+'" data-id="'+n.id+'">'+
+      '<div class="node-row"><span class="tag">'+p+'</span>'+
+      '<label class="sr" for="t-'+n.id+'">Branch '+p+'</label><textarea id="t-'+n.id+'" rows="1" data-n="text" placeholder="'+(depth===0?'A branch of the question':'A sub-question')+'">'+esc(n.text)+'</textarea>'+
+      '<div class="node-tools">'+(hasHyp?'':'<button class="ibtn" data-act="add-hyp">+ Hypothesis</button>')+
+      '<button class="ibtn" data-act="add-child">+ Sub-branch</button>'+
+      '<button class="ibtn danger" data-act="del-node" aria-label="Delete branch '+p+'">Delete</button></div></div>';
+    if(hasHyp){
+      h+='<div class="hyp"><div class="hyp-label">Hypothesis</div>'+
+        '<textarea rows="1" data-n="hyp" placeholder="What do you expect to find?" aria-label="Hypothesis for '+p+'">'+esc(n.hyp)+'</textarea>'+
+        '<select data-n="status" aria-label="Status of hypothesis '+p+'"><option value="">Open</option><option value="supported"'+(n.status==="supported"?' selected':'')+'>Supported</option><option value="refuted"'+(n.status==="refuted"?' selected':'')+'>Refuted</option></select>'+
+        '<div class="ev"><textarea rows="1" data-n="evidence" placeholder="Evidence: the analysis and the number that decides it" aria-label="Evidence for '+p+'">'+esc(n.evidence)+'</textarea></div></div>';
+    }
+    if(n.children.length>1){
+      h+='<div class="mece"><b>MECE check, '+n.children.length+' sub-branches:</b>'+
+        '<label><input type="checkbox" data-mece="ex"'+(n.mece&&n.mece.ex?' checked':'')+'> No overlaps</label>'+
+        '<label><input type="checkbox" data-mece="co"'+(n.mece&&n.mece.co?' checked':'')+'> Nothing missing</label></div>';
+    }
+    h+='</div>';
+    if(n.children.length)h+='<ul>'+treeHTML(n.children,p,depth+1)+'</ul>';
+    return h+'</li>';
+  }).join("");
+}
+function autosize(t){t.style.height="auto";t.style.height=t.scrollHeight+"px"}
+function renderTree(){
+  $("#rootQ").textContent=state.define.question||"Write your key question in step 1";
+  var root=state.tree.length>1?'<li style="padding-top:0"><div class="mece" style="margin:0 0 4px"><b>MECE check, '+state.tree.length+' main branches:</b><label><input type="checkbox" data-mece-root="ex"'+(state.meceRoot.ex?' checked':'')+'> No overlaps</label><label><input type="checkbox" data-mece-root="co"'+(state.meceRoot.co?' checked':'')+'> Nothing missing</label></div></li>':'';
+  $("#tree").innerHTML=root+treeHTML(state.tree,"",0);
+  $$("#tree textarea").forEach(autosize);
+  renderStats();
+  if(view==="map")renderMap();
+}
+
+/* tree map (read-only SVG, left to right) */
+function wrap(text,max){
+  var words=String(text||"").split(/\s+/),lines=[],cur="";
+  words.forEach(function(w){if((cur+" "+w).trim().length>max){if(cur)lines.push(cur);cur=w}else cur=(cur+" "+w).trim()});
+  if(cur)lines.push(cur); return lines.length?lines:[""];
+}
+function renderMap(){
+  var W=[300,250,280], GAPX=46, LH=16, PAD=12, GAPY=12;
+  var rootLines=wrap(state.define.question||"Key question",34);
+  var nodes=[];
+  function measure(n,depth){var l=wrap((n._label?n._label+". ":"")+n.text,depth===1?28:34);var extra=n.hyp?1:0;return {lines:l,h:PAD*2+l.length*LH+(extra?LH+4:0)}}
+  var y=0;
+  function place(n,depth,label){
+    n._label=label;
+    var m=measure(n,depth);
+    var kids=n.children||[];
+    var item={n:n,depth:depth,m:m};
+    if(!kids.length||depth>=2){item.y=y;y+=m.h+GAPY;nodes.push(item);return item}
+    var placed=kids.map(function(k,i){return place(k,depth+1,label+(depth===1?"":".")+(i+1))});
+    var top=placed[0].y,bottom=placed[placed.length-1].y+placed[placed.length-1].m.h;
+    item.y=Math.max(0,(top+bottom)/2-m.h/2); item.kids=placed; nodes.push(item); return item;
+  }
+  var tops=state.tree.map(function(n,i){var it=place(n,1,String.fromCharCode(65+i));y+=10;return it});
+  var H=Math.max(y,rootLines.length*LH+PAD*2)+10;
+  var rootH=rootLines.length*LH+PAD*2, rootY=H/2-rootH/2;
+  var X=[0,W[0]+GAPX,W[0]+GAPX+W[1]+GAPX];
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+(X[2]+W[2]+4)+'" height="'+H+'" font-family="IBM Plex Sans, sans-serif" font-size="13">';
+  function link(x1,y1,x2,y2){var mx=(x1+x2)/2;svg+='<path d="M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2+'" fill="none" stroke="#cfcbc0" stroke-width="1.5"/>'}
+  tops.forEach(function(t){link(X[0]+W[0],rootY+rootH/2,X[1],t.y+t.m.h/2)});
+  nodes.forEach(function(it){if(it.kids)it.kids.forEach(function(k){link(X[it.depth]+W[it.depth],it.y+it.m.h/2,X[k.depth],k.y+k.m.h/2)})});
+  svg+='<rect x="0" y="'+rootY+'" width="'+W[0]+'" height="'+rootH+'" rx="9" fill="#14213d"/>';
+  rootLines.forEach(function(l,i){svg+='<text x="'+PAD+'" y="'+(rootY+PAD+12+i*LH)+'" fill="#fff" font-weight="600">'+esc(l)+'</text>'});
+  nodes.forEach(function(it){
+    var d=Math.min(it.depth,2),x=X[d],w=W[d],n=it.n;
+    var fill=n.status==="supported"?"#e5f4ec":n.status==="refuted"?"#fbe9e4":"#ffffff";
+    var stroke=n.status==="supported"?"#1f7a4a":n.status==="refuted"?"#b3402a":"#cfcbc0";
+    svg+='<rect x="'+x+'" y="'+it.y+'" width="'+w+'" height="'+it.m.h+'" rx="9" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.2"/>';
+    it.m.lines.forEach(function(l,i){svg+='<text x="'+(x+PAD)+'" y="'+(it.y+PAD+12+i*LH)+'" fill="#14213d" font-weight="'+(d===1?600:500)+'">'+esc(l)+'</text>'});
+    if(n.hyp){var lab=n.status==="supported"?"✓ Supported":n.status==="refuted"?"✕ Refuted":"? Open";var col=n.status==="supported"?"#1f7a4a":n.status==="refuted"?"#b3402a":"#6b7280";svg+='<text x="'+(x+PAD)+'" y="'+(it.y+PAD+12+it.m.lines.length*LH+4)+'" fill="'+col+'" font-size="12" font-weight="700">'+lab+'</text>'}
+  });
+  svg+='</svg>';
+  $("#treeMap").innerHTML=svg;
+}
+
+/* ---------- PRIORITISE ---------- */
+function quadrant(o){var hi=o.impact>=3,ea=o.ease>=3;return hi&&ea?["win","Quick win"]:hi?["bet","Big bet"]:ea?["fill","Fill-in"]:["pit","Money pit"]}
+function renderOptions(){
+  var rows=state.options.map(function(o,i){
+    var q=quadrant(o);
+    return '<tr data-oid="'+o.id+'"><td><span class="num">'+(i+1)+'</span></td>'+
+      '<td><label class="sr" for="o-'+o.id+'">Option '+(i+1)+'</label><textarea class="opt-name" id="o-'+o.id+'" data-o="name" rows="1" placeholder="Describe the option">'+esc(o.name)+'</textarea></td>'+
+      '<td><div class="rng"><input type="range" min="1" max="5" step="1" data-o="impact" value="'+o.impact+'" aria-label="Impact of option '+(i+1)+'"><output>'+o.impact+'</output></div></td>'+
+      '<td><div class="rng"><input type="range" min="1" max="5" step="1" data-o="ease" value="'+o.ease+'" aria-label="Ease of option '+(i+1)+'"><output>'+o.ease+'</output></div></td>'+
+      '<td><span class="q '+q[0]+'">'+q[1]+'</span></td>'+
+      '<td><button class="ibtn danger" data-act="del-option" aria-label="Delete option '+(i+1)+'">✕</button></td></tr>';
+  }).join("");
+  $("#optRows").innerHTML=rows||'<tr><td colspan="6" style="color:var(--muted);padding:16px">No options yet. Add one, or pull them from your supported hypotheses.</td></tr>';
+  $$("#optRows textarea").forEach(autosize);
+  renderMatrix();
+}
+function renderMatrix(){
+  var S=420,P=46,inner=S-P-16,cell=inner/5;
+  var px=function(e){return P+(e-0.5)*cell}, py=function(i){return 16+(5.5-i)*cell};
+  var svg='<svg viewBox="0 0 '+S+' '+(S+6)+'" role="img" aria-label="Impact versus ease matrix" font-family="IBM Plex Sans, sans-serif">';
+  var mid=P+2*cell, midY=16+3*cell;   // boundary between scores 2 and 3 (3+ counts as high)
+  svg+='<rect x="'+mid+'" y="16" width="'+(P+inner-mid)+'" height="'+(midY-16)+'" fill="#e3f6ee"/>';
+  svg+='<rect x="'+P+'" y="16" width="'+(mid-P)+'" height="'+(midY-16)+'" fill="#e8f0fb"/>';
+  svg+='<rect x="'+mid+'" y="'+midY+'" width="'+(P+inner-mid)+'" height="'+(16+inner-midY)+'" fill="#f1f1ee"/>';
+  svg+='<rect x="'+P+'" y="'+midY+'" width="'+(mid-P)+'" height="'+(16+inner-midY)+'" fill="#fcebe3"/>';
+  var ql=[["Big bets",P+8,34,"#1d5fae"],["Quick wins",mid+8,34,"#0f7c56"],["Money pits",P+8,16+inner-10,"#b0461b"],["Fill-ins",mid+8,16+inner-10,"#5d6370"]];
+  ql.forEach(function(q){svg+='<text x="'+q[1]+'" y="'+q[2]+'" font-size="12.5" font-weight="700" fill="'+q[3]+'">'+q[0]+'</text>'});
+  svg+='<rect x="'+P+'" y="16" width="'+inner+'" height="'+inner+'" fill="none" stroke="#cfcbc0"/>';
+  for(var k=1;k<=5;k++){
+    svg+='<text x="'+px(k)+'" y="'+(16+inner+16)+'" font-size="11" fill="#7d8597" text-anchor="middle">'+k+'</text>';
+    svg+='<text x="'+(P-10)+'" y="'+(py(k)+4)+'" font-size="11" fill="#7d8597" text-anchor="end">'+k+'</text>';
+  }
+  svg+='<text x="'+(P+inner/2)+'" y="'+(S+2)+'" font-size="12" font-weight="700" fill="#4a5368" text-anchor="middle">Ease →</text>';
+  svg+='<text transform="translate(12 '+(16+inner/2)+') rotate(-90)" font-size="12" font-weight="700" fill="#4a5368" text-anchor="middle">Impact →</text>';
+  var seen={};
+  state.options.forEach(function(o,i){
+    var key=o.impact+"-"+o.ease, n=seen[key]=(seen[key]||0)+1;
+    var off=[[0,0],[13,-9],[-13,9],[13,9],[-13,-9],[0,15]][(n-1)%6];
+    var x=px(o.ease)+off[0], y=py(o.impact)+off[1];
+    svg+='<g><title>'+esc((i+1)+". "+o.name+" (impact "+o.impact+", ease "+o.ease+")")+'</title><circle cx="'+x+'" cy="'+y+'" r="11" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="'+x+'" y="'+(y+4)+'" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">'+(i+1)+'</text></g>';
+  });
+  $("#matrix").innerHTML=svg+'</svg>';
+}
+
+/* ---------- SYNTHESISE ---------- */
+function renderSynth(){
+  var gt=$("#f-gt"); if(document.activeElement!==gt)gt.value=state.synth.gt||"";
+  $("#klList").innerHTML=state.synth.lines.map(function(l,i){
+    return '<div class="kl" data-lid="'+l.id+'"><div class="kl-head"><b>Key line '+(i+1)+'</b><button class="ibtn danger" data-act="del-kl" aria-label="Delete key line '+(i+1)+'">Delete</button></div>'+
+      '<textarea rows="1" data-l="text" placeholder="A reason the governing thought is true" aria-label="Key line '+(i+1)+'" style="font-weight:600">'+esc(l.text)+'</textarea>'+
+      '<textarea rows="2" data-l="support" placeholder="Supporting evidence, one point per line" aria-label="Support for key line '+(i+1)+'">'+esc(l.support)+'</textarea></div>';
+  }).join("");
+  $$("#klList textarea").forEach(autosize);
+  renderPyramid();
+}
+function renderPyramid(){
+  $("#pyrGt").textContent=state.synth.gt||"";
+  $("#pyrLines").innerHTML=state.synth.lines.filter(function(l){return l.text.trim()}).map(function(l){
+    var pts=l.support.split(/\n/).map(function(s){return s.trim()}).filter(Boolean);
+    return '<div class="line">'+esc(l.text)+(pts.length?'<ul>'+pts.map(function(p){return '<li>'+esc(p)+'</li>'}).join("")+'</ul>':'')+'</div>';
+  }).join("")||'<div class="line" style="opacity:.55">Add key lines on the left</div>';
+}
+
+/* ---------- export ---------- */
+function markdown(){
+  var d=state.define, out=[];
+  out.push("# "+(state.title||"Untitled problem"),"");
+  out.push("## 1. Problem definition","","**Key question:** "+(d.question||"_not set_"),"");
+  [["Situation",d.situation],["Decision-maker",d.decider],["Deadline",d.deadline],["Success criteria",d.success],["In scope",d.scopeIn],["Out of scope",d.scopeOut],["Constraints",d.constraints]].forEach(function(r){if(r[1])out.push("- **"+r[0]+":** "+r[1])});
+  out.push("","## 2. Issue tree","");
+  function md(list,depth,parent){list.forEach(function(n,i){
+    var p=depth===0?String.fromCharCode(65+i):(depth===1?parent+(i+1):parent+"."+(i+1));
+    out.push("  ".repeat(depth)+"- **"+p+".** "+(n.text||"").replace(/^[A-Z]\d*(\.\d+)*\.\s*/,""));
+    if(n.hyp)out.push("  ".repeat(depth+1)+"- _Hypothesis:_ "+n.hyp+" **["+(n.status||"open").toUpperCase()+"]**"+(n.evidence?" — "+n.evidence:""));
+    md(n.children,depth+1,p);
+  })}
+  md(state.tree,0,"");
+  out.push("","## 3. Prioritisation","","| # | Option | Impact | Ease | Quadrant |","|---|---|:-:|:-:|---|");
+  state.options.forEach(function(o,i){out.push("| "+(i+1)+" | "+o.name+" | "+o.impact+" | "+o.ease+" | "+quadrant(o)[1]+" |")});
+  out.push("","## 4. Storyline","","> **"+(state.synth.gt||"")+"**","");
+  state.synth.lines.forEach(function(l,i){if(!l.text.trim())return;out.push((i+1)+". **"+l.text+"**");l.support.split(/\n/).filter(function(s){return s.trim()}).forEach(function(s){out.push("   - "+s.trim())})});
+  out.push("","_Made with Issue Tree Studio._");
+  return out.join("\n");
+}
+function download(name,text,type){
+  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function slug(){return (state.title||"issue-tree").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"issue-tree"}
+
+/* ---------- render + events ---------- */
+function render(){
+  $("#projTitle").value=state.title||"";
+  renderDefine();renderTree();renderOptions();renderSynth();
+}
+function setStep(s){
+  step=s;
+  $$(".step").forEach(function(b){b.setAttribute("aria-selected",String(b.getAttribute("data-step")===s))});
+  $$("section.panel").forEach(function(p){p.hidden=p.id!=="p-"+s});
+  if(s==="structure"){renderTree()}
+  $$("#p-"+s+" textarea").forEach(function(t){if(t.rows<=2&&!t.classList.contains("big"))autosize(t)});
+  try{history.replaceState(null,"","#"+s)}catch(e){}
+}
+
+document.addEventListener("click",function(e){
+  var st=e.target.closest(".step"); if(st){setStep(st.getAttribute("data-step"));return}
+  var vb=e.target.closest("[data-view]"); if(vb){view=vb.getAttribute("data-view");$$("[data-view]").forEach(function(b){b.setAttribute("aria-pressed",String(b===vb))});$("#treeEdit").hidden=view!=="edit";$("#treeMap").hidden=view!=="map";if(view==="map")renderMap();return}
+  var nd=e.target.closest(".node"); if(nd&&selected!==nd.getAttribute("data-id")){selected=nd.getAttribute("data-id");$$(".node").forEach(function(x){x.classList.toggle("sel",x===nd)})}
+  var b=e.target.closest("[data-act]"); if(!b)return;
+  var a=b.getAttribute("data-act");
+  var nodeEl=b.closest(".node"), hit=nodeEl&&find(nodeEl.getAttribute("data-id"));
+  if(a==="example"){if(confirmReplace()){state=example();save();render();toast("Example loaded: UK high street")}}
+  else if(a==="new"){if(confirmReplace()){state=blank();save();render();setStep("define");toast("New blank problem")}}
+  else if(a==="import"){$("#fileIn").click()}
+  else if(a==="export-json"){download(slug()+".json",JSON.stringify(state,null,2),"application/json");toast("Saved as a file")}
+  else if(a==="export-md"){download(slug()+".md",markdown(),"text/markdown");toast("Markdown exported")}
+  else if(a==="add-branch"){var n=node("","","","",[]);state.tree.push(n);selected=n.id;save();renderTree();focusNode(n.id)}
+  else if(a==="add-child"&&hit){var c=node("","","","",[]);hit.n.children.push(c);selected=c.id;save();renderTree();focusNode(c.id)}
+  else if(a==="add-hyp"&&hit){hit.n._showHyp=true;renderTree();var t=$('.node[data-id="'+hit.n.id+'"] [data-n="hyp"]');if(t)t.focus()}
+  else if(a==="del-node"&&hit){
+    var has=hit.n.children.length||hit.n.text.trim()||hit.n.hyp.trim();
+    if(has&&b.getAttribute("data-armed")!=="1"){b.setAttribute("data-armed","1");b.textContent="Click to confirm";setTimeout(function(){if(b.isConnected){b.removeAttribute("data-armed");b.textContent="Delete"}},2500);return}
+    siblingsOf(hit).splice(hit.i,1); if(!state.tree.length)state.tree.push(node("","","","",[]));save();renderTree()}
+  else if(a==="add-option"){state.options.push({id:uid(),name:"",impact:3,ease:3});save();renderOptions();var ins=$$("#optRows textarea");if(ins.length)ins[ins.length-1].focus()}
+  else if(a==="del-option"){var r=b.closest("tr");state.options=state.options.filter(function(o){return o.id!==r.getAttribute("data-oid")});save();renderOptions()}
+  else if(a==="options-from-tree"){
+    var added=0,names=state.options.map(function(o){return o.name});
+    walk(state.tree,function(n){if(n.status==="supported"&&n.hyp){var nm="Act on: "+n.hyp.replace(/\.$/,"");if(names.indexOf(nm)<0){state.options.push({id:uid(),name:nm,impact:3,ease:3});added++}}});
+    save();renderOptions();toast(added?added+" option"+(added>1?"s":"")+" added. Rewrite them as actions and score them.":"No new supported hypotheses to add");
+  }
+  else if(a==="add-kl"){state.synth.lines.push({id:uid(),text:"",support:""});save();renderSynth()}
+  else if(a==="del-kl"){var k=b.closest(".kl");state.synth.lines=state.synth.lines.filter(function(l){return l.id!==k.getAttribute("data-lid")});save();renderSynth()}
+  else if(a==="kl-from-tree"){
+    if(state.synth.lines.some(function(l){return l.text.trim()})&&b.getAttribute("data-armed")!=="1"){b.setAttribute("data-armed","1");b.textContent="This replaces your key lines. Click again";setTimeout(function(){if(b.isConnected){b.removeAttribute("data-armed");b.textContent="Draft from the issue tree"}},3000);return}
+    b.removeAttribute("data-armed");b.textContent="Draft from the issue tree";
+    state.synth.lines=state.tree.map(function(t){
+      var pts=[];walk(t.children,function(n){if(n.hyp&&n.status)pts.push((n.status==="refuted"?"Not true: ":"")+n.hyp+(n.evidence?" ("+n.evidence+")":""))});
+      return {id:uid(),text:t.text.replace(/^[A-Z]\.\s*/,""),support:pts.join("\n")};
+    });
+    save();renderSynth();toast("Drafted from the tree. Now rewrite each line as an answer, not a question.");
+  }
+});
+var replaceArmed=0;
+function confirmReplace(){var now=Date.now();if(now-replaceArmed<4000){replaceArmed=0;return true}replaceArmed=now;toast("This replaces your current work. Click again to confirm");return false}
+function focusNode(id){var t=document.getElementById("t-"+id);if(t)t.focus()}
+
+document.addEventListener("input",function(e){
+  var t=e.target;
+  if(t.id==="projTitle"){state.title=t.value;save();return}
+  if(t.hasAttribute("data-f")){state.define[t.getAttribute("data-f")]=t.value;save();renderSmart();if(t.getAttribute("data-f")==="question")$("#rootQ").textContent=t.value||"Write your key question in step 1";return}
+  if(t.hasAttribute("data-n")){var h=find(t.closest(".node").getAttribute("data-id"));if(!h)return;h.n[t.getAttribute("data-n")]=t.value;if(t.tagName==="TEXTAREA")autosize(t);save();if(t.getAttribute("data-n")!=="text")renderStats();return}
+  if(t.hasAttribute("data-o")){var r=t.closest("tr"),o=state.options.filter(function(x){return x.id===r.getAttribute("data-oid")})[0];if(!o)return;var k=t.getAttribute("data-o");o[k]=k==="name"?t.value:+t.value;if(k==="name")autosize(t);if(k!=="name"){t.nextElementSibling.textContent=t.value;var q=quadrant(o),qs=r.querySelector(".q");qs.className="q "+q[0];qs.textContent=q[1]}save();renderMatrix();return}
+  if(t.id==="f-gt"){state.synth.gt=t.value;autosize(t);save();renderPyramid();return}
+  if(t.hasAttribute("data-l")){var kl=t.closest(".kl"),l=state.synth.lines.filter(function(x){return x.id===kl.getAttribute("data-lid")})[0];if(!l)return;l[t.getAttribute("data-l")]=t.value;autosize(t);save();renderPyramid();return}
+});
+document.addEventListener("change",function(e){
+  var t=e.target;
+  if(t.hasAttribute("data-n")&&t.tagName==="SELECT"){var h=find(t.closest(".node").getAttribute("data-id"));h.n.status=t.value;save();renderStats();return}
+  if(t.hasAttribute("data-mece")){var h2=find(t.closest(".node").getAttribute("data-id"));h2.n.mece=h2.n.mece||{};h2.n.mece[t.getAttribute("data-mece")]=t.checked;save();return}
+  if(t.hasAttribute("data-mece-root")){state.meceRoot[t.getAttribute("data-mece-root")]=t.checked;save();return}
+});
+$("#fileIn").addEventListener("change",function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){try{var d=JSON.parse(r.result);if(!d.define||!d.tree)throw 0;state=d;state.meceRoot=state.meceRoot||{ex:false,co:false};save();render();toast("Imported "+f.name)}catch(err){toast("That file isn't an Issue Tree Studio project")}};
+  r.readAsText(f);e.target.value="";
+});
+
+state=load();
+render();
+var h=(location.hash||"").slice(1); if(["define","structure","prioritise","synthesise"].indexOf(h)>=0)setStep(h);
+$("#saved").textContent="Saved in this browser";
+})();
+</script>
+</body>
+</html>

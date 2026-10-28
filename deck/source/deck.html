@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Fixing Northbridge's high street</title>
+<style>
+@font-face{font-family:Plex;src:url(ibm-plex-sans-latin-400-normal.woff2);font-weight:400}
+@font-face{font-family:Plex;src:url(ibm-plex-sans-latin-500-normal.woff2);font-weight:500}
+@font-face{font-family:Plex;src:url(ibm-plex-sans-latin-600-normal.woff2);font-weight:600}
+@font-face{font-family:Plex;src:url(ibm-plex-sans-latin-700-normal.woff2);font-weight:700}
+@font-face{font-family:Serif;src:url(serif.woff2);font-weight:200 900}
+@page{size:1280px 720px;margin:0}
+:root{--ink:#14213d;--ink2:#4a5368;--muted:#7d8597;--line:#e4e1d9;--accent:#2a78d6;--soft:#e8f0fb;--bg:#fcfcfb;--ok:#1f7a4a;--okbg:#e5f4ec;--bad:#b3402a;--badbg:#fbe9e4}
+*{box-sizing:border-box;margin:0}
+body{font-family:Plex,sans-serif;color:var(--ink);background:#555}
+.s{width:1280px;height:720px;background:var(--bg);position:relative;overflow:hidden;page-break-after:always;padding:46px 64px 0}
+.tracker{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.tracker::before{content:"";width:22px;height:2px;background:var(--accent)}
+h1.t{font-size:30px;line-height:1.18;font-weight:700;letter-spacing:-.015em;max-width:1100px}
+.sub{font-size:16px;color:var(--ink2);margin-top:8px}
+.foot{position:absolute;left:64px;right:64px;bottom:22px;display:flex;justify-content:space-between;gap:30px;font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:9px}
+.foot .src{flex:1}
+.body{margin-top:26px}
+.cols{display:grid;grid-template-columns:1.45fr 1fr;gap:40px;align-items:start}
+.cols img{width:100%;display:block}
+ul.pts{list-style:none;padding:0;display:grid;gap:16px}
+ul.pts li{font-size:16px;line-height:1.45;color:var(--ink2);padding-left:18px;position:relative}
+ul.pts li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+ul.pts b{color:var(--ink)}
+.sowhat{margin-top:22px;background:var(--ink);color:#fff;border-radius:10px;padding:16px 18px;font-size:15px;line-height:1.45}
+.sowhat b{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9fb8e0;margin-bottom:4px}
+.big{font-size:44px;font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1}
+.big small{display:block;font-size:13px;font-weight:500;color:var(--ink2);letter-spacing:0;margin-top:6px;line-height:1.35}
+/* title slide */
+.cover{background:var(--ink);color:#fff;padding:0 80px;display:flex;flex-direction:column;justify-content:center}
+.cover .kick{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#9fb8e0;font-weight:700;margin-bottom:22px}
+.cover h1{font:600 64px/1.04 Serif,serif;letter-spacing:-.02em;max-width:900px}
+.cover p{font-size:21px;color:#d5deee;margin-top:22px;max-width:760px;line-height:1.4}
+.cover .by{position:absolute;left:80px;bottom:48px;font-size:14px;color:#9fb8e0;line-height:1.6}
+.cover .bars{position:absolute;right:80px;top:96px;display:grid;gap:18px}
+.cover .bars i{display:block;height:34px;border-radius:5px;background:#2a78d6}
+.cover .bars i:nth-child(2){background:#4d8ee0;width:180px}
+.cover .bars i:nth-child(1){width:250px}
+.cover .bars i:nth-child(3){background:#fcfcfb;width:120px}
+/* exec summary */
+.gt{font:500 27px/1.38 Serif,serif;border-left:4px solid var(--accent);padding:4px 0 4px 20px;max-width:1080px}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+.pillar{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+.pillar .n{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.1em;text-transform:uppercase}
+.pillar h3{font-size:20px;margin:8px 0 12px;line-height:1.25}
+.pillar p{font-size:16.5px;color:var(--ink2);line-height:1.55}
+.pillar p b{color:var(--ink)}
+/* question */
+.q{background:var(--ink);color:#fff;border-radius:12px;padding:28px 32px;font:500 28px/1.38 Serif,serif}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.box h4{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.box p,.box li{font-size:16px;line-height:1.55;color:var(--ink2)}
+.box ul{padding-left:16px;display:grid;gap:4px}
+.smart{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.smart span{background:var(--okbg);color:var(--ok);font-size:12.5px;font-weight:700;border-radius:999px;padding:4px 12px}
+/* tree */
+.tree{display:grid;grid-template-columns:230px 1fr;gap:0;align-items:center;margin-top:30px}
+.troot{background:var(--ink);color:#fff;border-radius:10px;padding:18px;font:500 17px/1.4 Serif,serif}
+.tbranches{display:grid;gap:16px;padding-left:34px;border-left:2px solid #cfcbc0;margin-left:24px}
+.tb{display:grid;grid-template-columns:220px 1fr 1fr;gap:10px;align-items:stretch;position:relative}
+.tb::before{content:"";position:absolute;left:-34px;top:50%;width:32px;border-top:2px solid #cfcbc0}
+.tb .lvl1{background:#fff;border:1.5px solid var(--ink);border-radius:9px;padding:14px 14px;font-weight:700;font-size:15.5px;display:flex;align-items:center}
+.leaf{border-radius:9px;padding:12px 13px;font-size:14.5px;line-height:1.35;border:1.2px solid}
+.leaf.ok{background:var(--okbg);border-color:var(--ok)}
+.leaf.bad{background:var(--badbg);border-color:var(--bad)}
+.leaf b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.leaf.ok b{color:var(--ok)}.leaf.bad b{color:var(--bad)}
+/* reco */
+.reco{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.reco .pillar ul{padding-left:18px;font-size:16.5px;color:var(--ink2);line-height:1.5;display:grid;gap:10px;margin-top:10px}
+.why{font-size:14px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:10px;line-height:1.45}
+/* matrix */
+.mx{display:grid;grid-template-columns:520px 1fr;gap:40px;align-items:start}
+table.t{width:100%;border-collapse:collapse;font-size:15px}
+table.t th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1.5px solid var(--ink)}
+table.t td{padding:10px 8px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+table.t td:first-child{color:var(--ink);font-weight:600}
+.qd{font-weight:700;white-space:nowrap}.qd.w{color:#0f7c56}.qd.b{color:#1d5fae}.qd.f{color:#5d6370}.qd.p{color:#c2501f}
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:6px}
+.phase{padding:0 18px 0 0}
+.phase .bar{height:10px;background:var(--accent);border-radius:5px 0 0 5px;margin-bottom:14px}
+.phase:nth-child(2) .bar{background:#4d8ee0;border-radius:0}
+.phase:nth-child(3) .bar{background:var(--ink);border-radius:0 5px 5px 0}
+.phase h4{font-size:18px;margin-bottom:8px}
+.phase ul{padding-left:16px;font-size:15.5px;color:var(--ink2);line-height:1.5;display:grid;gap:4px}
+.phase .ms{margin-top:12px;font-size:15px;font-weight:600;color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:40px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi h5{font-size:13.5px;color:var(--ink2);font-weight:600;line-height:1.3;min-height:32px}
+.kpi p{font-size:24px;font-weight:700;margin-top:4px}
+.kpi p small{font-size:12px;font-weight:500;color:var(--muted)}
+.src-list{font-size:15px;color:var(--ink2);line-height:1.55;columns:2;column-gap:40px}
+.src-list p{break-inside:avoid;margin-bottom:16px}
+.src-list b{color:var(--ink)}
+</style></head><body>
+
+<!-- 1 -->
+<section class="s cover">
+  <div class="kick">Illustrative consulting case · UK high streets</div>
+  <h1>Fixing Northbridge's high street</h1>
+  <p>A five-year plan to bring town-centre shop vacancy down from 18% to the GB average of 14% by 2030</p>
+  <div class="bars" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="by">Mohammadamin Zare · October 2026<br>Northbridge is an illustrative composite town; all data is real and public</div>
+</section>
+
+<!-- 2 -->
+<section class="s">
+  <div class="tracker">Executive summary</div>
+  <h1 class="t">Shopping alone will not refill Northbridge: shrink the retail core and give people other reasons to come</h1>
+  <div class="body">
+    <p class="gt">Northbridge should concentrate retail into a compact core, fill empty units fast using its new powers, and anchor the centre with food, leisure and homes.</p>
+    <div class="pillars">
+      <div class="pillar"><div class="n">Pillar 1</div><h3>Right-size the centre</h3><p><b>27.5%</b> of retail spending is now online and isn't coming back. Struggling towns have <b>more than twice</b> the retail space per person of thriving ones.</p></div>
+      <div class="pillar"><div class="n">Pillar 2</div><h3>Fill empty units fast</h3><p>High Street Rental Auctions let the council let units empty for a year <b>without landlord consent</b>. Independents, <b>84%</b> of closures, face a <b>28%</b> rates rise in 2026/27.</p></div>
+      <div class="pillar"><div class="n">Pillar 3</div><h3>Give people reasons to come</h3><p>In thriving centres food is <b>£1 in every £4</b> spent, against £1 in £10 in struggling ones. A food and leisure anchor, events and town-centre homes bring footfall back.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Sources: ONS; Centre for Retail Research; BRC–Local Data Company; Centre for Cities; England business rates 2024–2027. Full list on the last slide.</span><span>2</span></div>
+</section>
+
+<!-- 3 -->
+<section class="s">
+  <div class="tracker">The question</div>
+  <h1 class="t">We turned "what do we do about the high street?" into one answerable question</h1>
+  <div class="body">
+    <div class="q">How can Northbridge Council bring town-centre shop vacancy down from about 18% to 14% by 2030, while increasing footfall, using its existing powers and about £5m of capital?</div>
+    <div class="smart"><span>✓ Specific</span><span>✓ Measurable</span><span>✓ Action-oriented</span><span>✓ Relevant</span><span>✓ Time-bound</span></div>
+    <div class="grid3">
+      <div class="box"><h4>Decision-maker</h4><p>Council leader and cabinet, who need a fundable plan with visible results within 12 months.</p></div>
+      <div class="box"><h4>In scope</h4><ul><li>Town-centre units</li><li>Planning, rental auctions, grants</li><li>Council property, events, parking</li></ul></div>
+      <div class="box"><h4>Out of scope</h4><ul><li>National tax policy (taken as given)</li><li>Out-of-town retail parks</li><li>Online retail itself</li></ul></div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Northbridge's 18% vacancy matches the North East average (17.9%, Q4 2023, Local Data Company). GB average 14.0%.</span><span>3</span></div>
+</section>
+
+<!-- 4 -->
+<section class="s">
+  <div class="tracker">Approach</div>
+  <h1 class="t">We tested eight hypotheses across four MECE branches; two were wrong, and that changed the answer</h1>
+  <div class="tree">
+    <div class="troot">How can Northbridge cut vacancy from ~18% to 14% by 2030?</div>
+    <div class="tbranches">
+      <div class="tb"><div class="lvl1">A. Demand: enough customers?</div>
+        <div class="leaf ok"><b>✓ Supported</b>The shift online is structural</div>
+        <div class="leaf ok"><b>✓ Supported</b>Footfall is still falling</div></div>
+      <div class="tb"><div class="lvl1">B. Supply: right space?</div>
+        <div class="leaf ok"><b>✓ Supported</b>Struggling towns have too much retail space</div>
+        <div class="leaf ok"><b>✓ Supported</b>Convenient formats win; high streets lag</div></div>
+      <div class="tb"><div class="lvl1">C. Cost: can occupiers afford it?</div>
+        <div class="leaf bad"><b>✕ Refuted</b>The 2026 rates reform lowers small shops' costs</div>
+        <div class="leaf bad"><b>✕ Refuted</b>Chains leaving is the main cause of closures</div></div>
+      <div class="tb"><div class="lvl1">D. Activation: is anyone filling units?</div>
+        <div class="leaf ok"><b>✓ Supported</b>The council has new powers to fill empty units</div>
+        <div class="leaf ok"><b>✓ Supported</b>Strong centres draw people with food and leisure</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Each branch is one reason a unit stays empty: too few customers, wrong space, too costly, or nobody filling it. Every unit falls into exactly one.</span><span>4</span></div>
+</section>
+
+<!-- 5 -->
+<section class="s">
+  <div class="tracker">Findings · A. Demand</div>
+  <h1 class="t">More than a quarter of retail spending is now online, and most of the pandemic jump has stuck</h1>
+  <div class="body cols">
+    <img src="../../analysis/charts/plain/01_online_share.png" alt="Online share of UK retail sales, 2007 to 2025">
+    <div>
+      <div class="big">72%<small>of the pandemic jump in online share has stuck: 19.2% in 2019, 30.7% in 2021, 27.5% in 2025</small></div>
+      <ul class="pts" style="margin-top:22px">
+        <li>Footfall is still drifting down: <b>−0.8%</b> across 2025, <b>−2.9%</b> in December</li>
+        <li>The spending that left is not coming back to physical shops</li>
+      </ul>
+      <div class="sowhat"><b>So what</b>Northbridge needs reasons to visit that the internet can't replace.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Source: ONS Retail Sales Index, series J4MC; BRC–Sensormatic footfall monitor (9 Jan 2026).</span><span>5</span></div>
+</section>
+
+<!-- 6 -->
+<section class="s">
+  <div class="tracker">Findings · B. Supply</div>
+  <h1 class="t">Retail parks recovered after the pandemic; high streets did not, and struggling towns simply have too much space</h1>
+  <div class="body cols">
+    <img src="../../analysis/charts/plain/03_vacancy_by_location.png" alt="Vacancy by location type, 2021 to 2023">
+    <div>
+      <ul class="pts">
+        <li>Retail park vacancy fell from <b>11.3% to 7.6%</b>; high streets barely moved (<b>14.5% → 14.0%</b>)</li>
+        <li>Newport, Wigan and Middlesbrough have <b>more than twice the retail space per person</b> of Brighton or Liverpool</li>
+        <li>North East vacancy (<b>17.9%</b>) is almost <b>70% higher</b> than London's (10.6%)</li>
+      </ul>
+      <div class="sowhat"><b>So what</b>Even a successful plan won't fill every unit as a shop. Shrink the retail footprint and repurpose the rest.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Source: BRC–Local Data Company Vacancy Monitor (Q3 2021–Q4 2023); Centre for Cities, Checking out (July 2025).</span><span>6</span></div>
+</section>
+
+<!-- 7 -->
+<section class="s">
+  <div class="tracker">Findings · C. Cost</div>
+  <h1 class="t">The "permanent cut" in business rates still raises a small shop's bill by 28% in 2026/27</h1>
+  <div class="body cols">
+    <img src="../../analysis/charts/plain/05_business_rates_example.png" alt="Rates bill for a £30,000 rateable value shop">
+    <div>
+      <ul class="pts">
+        <li>From April 2026, a new lower multiplier (<b>38.2p</b>) replaces the <b>40% relief</b> retail had in 2025/26</li>
+        <li>For a shop with a rateable value of £30,000, the bill rises from <b>£8,982 to £11,460</b>, three times its 2024/25 level</li>
+        <li>This hypothesis was <b>refuted</b>: rates are not a problem already solved by government</li>
+      </ul>
+      <div class="sowhat"><b>So what</b>A one-year rates transition grant keeps viable independents open through the cliff.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Source: Armstrong Watson (May 2025); Spelthorne Borough Council 2026/27 multipliers. Illustrative: ignores the 2026 revaluation and transitional relief.</span><span>7</span></div>
+</section>
+
+<!-- 8 -->
+<section class="s">
+  <div class="tracker">Findings · C. Cost</div>
+  <h1 class="t">Independents, not chains, now account for 5 in 6 store closures</h1>
+  <div class="body cols">
+    <img src="../../analysis/charts/plain/02_store_closures.png" alt="UK store closures by type, 2018 to 2025">
+    <div>
+      <div class="big">84%<small>of 2024's 13,479 closures were independents (11,341)</small></div>
+      <ul class="pts" style="margin-top:22px">
+        <li>Chain closures peaked in 2019, 2020 and 2022, and have fallen since</li>
+        <li>About <b>17,350</b> closures were forecast for 2025, up 29% on 2024</li>
+      </ul>
+      <div class="sowhat"><b>So what</b>Keeping the independents already there matters as much as attracting national chains.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Source: Centre for Retail Research (2018–2024 actual; 2025 forecast).</span><span>8</span></div>
+</section>
+
+<!-- 9 -->
+<section class="s">
+  <div class="tracker">Recommendations</div>
+  <h1 class="t">Three pillars: right-size the centre, fill empty units fast, and give people reasons to come</h1>
+  <div class="body reco">
+    <div class="pillar"><div class="n">Pillar 1</div><h3>Right-size the centre</h3>
+      <ul><li>Define a compact retail core of 2–3 streets</li><li>Rezone the edges for homes, health, education and workspace</li><li>Start conversions with council-owned property</li></ul>
+      <div class="why">Because: too much retail space for the spending left (findings A, B)</div></div>
+    <div class="pillar"><div class="n">Pillar 2</div><h3>Fill empty units fast</h3>
+      <ul><li>High Street Rental Auctions on units empty more than a year</li><li>Meanwhile-use and pop-up programme</li><li>2026/27 rates transition grant for small independents</li></ul>
+      <div class="why">Because: new powers exist, and independents face a rates cliff (findings C, D)</div></div>
+    <div class="pillar"><div class="n">Pillar 3</div><h3>Give people reasons to come</h3>
+      <ul><li>A food and leisure anchor, such as a market hall in a large empty unit</li><li>A year-round events programme</li><li>Prioritise new homes in the town centre</li></ul>
+      <div class="why">Because: strong centres win on food, leisure and residents (findings A, D)</div></div>
+  </div>
+  <div class="foot"><span class="src">Recommendations draw on Centre for Cities (2025) and the High Street Rental Auction regulations (in force 2 December 2024).</span><span>9</span></div>
+</section>
+
+<!-- 10 -->
+<section class="s">
+  <div class="tracker">Prioritisation</div>
+  <h1 class="t">Two quick wins to start now, two big bets to fund over five years, and free parking dropped</h1>
+  <div class="body mx">
+    <svg viewBox="0 0 520 470" width="520" height="470" font-family="Plex, sans-serif">
+      <rect x="50" y="10" width="176" height="264" fill="#e8f0fb"/><rect x="226" y="10" width="264" height="264" fill="#e3f6ee"/>
+      <rect x="50" y="274" width="176" height="176" fill="#fcebe3"/><rect x="226" y="274" width="264" height="176" fill="#f1f1ee"/>
+      <rect x="50" y="10" width="440" height="440" fill="none" stroke="#cfcbc0"/>
+      <text x="60" y="32" font-size="14" font-weight="700" fill="#1d5fae">Big bets</text>
+      <text x="236" y="32" font-size="14" font-weight="700" fill="#0f7c56">Quick wins</text>
+      <text x="60" y="440" font-size="14" font-weight="700" fill="#b0461b">Money pits</text>
+      <text x="236" y="440" font-size="14" font-weight="700" fill="#5d6370">Fill-ins</text>
+      <g font-size="11" fill="#7d8597" text-anchor="middle"><text x="94" y="466">1</text><text x="182" y="466">2</text><text x="270" y="466">3</text><text x="358" y="466">4</text><text x="446" y="466">5</text></g>
+      <g font-size="11" fill="#7d8597" text-anchor="end"><text x="42" y="410">1</text><text x="42" y="322">2</text><text x="42" y="234">3</text><text x="42" y="146">4</text><text x="42" y="58">5</text></g>
+      <text transform="translate(14 230) rotate(-90)" font-size="12" font-weight="700" fill="#4a5368" text-anchor="middle">Impact →</text>
+      <g font-size="12" font-weight="700" text-anchor="middle">
+        <circle cx="358" cy="142" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="358" y="146" fill="#fff">1</text>
+        <circle cx="270" cy="230" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="270" y="234" fill="#fff">2</text>
+        <circle cx="182" cy="54" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="182" y="58" fill="#fff">3</text>
+        <circle cx="182" cy="142" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="182" y="146" fill="#fff">4</text>
+        <circle cx="446" cy="318" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="446" y="322" fill="#fff">5</text>
+        <circle cx="358" cy="318" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="358" y="322" fill="#fff">6</text>
+        <circle cx="270" cy="318" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="270" y="322" fill="#fff">7</text>
+        <circle cx="182" cy="406" r="14" fill="#14213d" stroke="#fff" stroke-width="2"/><text x="182" y="410" fill="#fff">8</text>
+      </g>
+    </svg>
+    <table class="t">
+      <tr><th>#</th><th>Option</th><th>I</th><th>E</th><th>Quadrant</th></tr>
+      <tr><td>1</td><td>High Street Rental Auctions</td><td>4</td><td>4</td><td class="qd w">Quick win</td></tr>
+      <tr><td>2</td><td>Rates transition grant</td><td>3</td><td>3</td><td class="qd w">Quick win</td></tr>
+      <tr><td>3</td><td>Shrink the core, convert the edges</td><td>5</td><td>2</td><td class="qd b">Big bet</td></tr>
+      <tr><td>4</td><td>Food and leisure anchor</td><td>4</td><td>2</td><td class="qd b">Big bet</td></tr>
+      <tr><td>5</td><td>Meanwhile use and pop-ups</td><td>2</td><td>5</td><td class="qd f">Fill-in</td></tr>
+      <tr><td>6</td><td>Town-centre data dashboard</td><td>2</td><td>4</td><td class="qd f">Fill-in</td></tr>
+      <tr><td>7</td><td>Year-round events</td><td>2</td><td>3</td><td class="qd f">Fill-in</td></tr>
+      <tr><td>8</td><td>Free parking</td><td>1</td><td>2</td><td class="qd p">Money pit</td></tr>
+    </table>
+  </div>
+  <div class="foot"><span class="src">I = impact on the 18% → 14% target; E = ease (cost, speed, council control). Scores are team judgement on a 1–5 scale; 3 or more counts as high.</span><span>10</span></div>
+</section>
+
+<!-- 11 -->
+<section class="s">
+  <div class="tracker">Roadmap</div>
+  <h1 class="t">Visible results in year one, the big bets in years one to three, and 14% vacancy by 2030</h1>
+  <div class="body">
+    <div class="road">
+      <div class="phase"><div class="bar"></div><h4>First 12 months</h4><ul><li>Launch the town-centre dashboard</li><li>Designate the auction area; run the first 5–10 auctions</li><li>Start the pop-up programme</li><li>Open the rates transition grant</li></ul><p class="ms">Vacancy down 1–2 points</p></div>
+      <div class="phase"><div class="bar"></div><h4>Years 1–3</h4><ul><li>Adopt the masterplan: retail core plus conversion zones</li><li>Open the food and leisure anchor</li><li>Begin council-led conversions</li></ul><p class="ms">Footfall above the 2025 baseline</p></div>
+      <div class="phase"><div class="bar"></div><h4>Years 3–5</h4><ul><li>Deliver conversions to homes and services</li><li>Match the retail footprint to demand</li></ul><p class="ms">Vacancy at 14% by 2030</p></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><h5>Town-centre vacancy</h5><p>18% → 14%</p></div>
+      <div class="kpi"><h5>Persistent vacancy (2+ years)</h5><p>Halved</p></div>
+      <div class="kpi"><h5>Footfall (2025 = 100)</h5><p>&gt; 100</p></div>
+      <div class="kpi"><h5>Food, leisure and services share of units</h5><p>+10 pts</p></div>
+      <div class="kpi"><h5>New homes in the centre</h5><p>Set in plan</p></div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Baselines for persistent vacancy and unit mix to be set by a unit-by-unit survey in the first three months.</span><span>11</span></div>
+</section>
+
+<!-- 12 -->
+<section class="s">
+  <div class="tracker">Risks and next steps</div>
+  <h1 class="t">The main risks are landlord resistance and capital; both have clear mitigations</h1>
+  <div class="body" style="display:grid;grid-template-columns:1.5fr 1fr;gap:40px">
+    <table class="t">
+      <tr><th style="width:42%">Risk</th><th>Mitigation</th></tr>
+      <tr><td>Landlords resist auctions or conversions</td><td>Start with the longest-empty units, publish the data, offer partnership before compulsory powers</td></tr>
+      <tr><td>£5m is too little for conversions</td><td>Use council property first; bid for national regeneration funding; joint ventures with housing associations</td></tr>
+      <tr><td>Pop-ups don't become lasting tenants</td><td>Track conversion to longer leases; give successful pop-ups priority in auctions</td></tr>
+      <tr><td>National policy changes again</td><td>Review the rates grant yearly; build the plan on demand and supply, not tax</td></tr>
+    </table>
+    <div class="box" style="align-self:start"><h4>Next steps</h4><ul style="gap:14px"><li><b>Cabinet:</b> agree the core boundary and auction area</li><li><b>Month 1–3:</b> unit-by-unit vacancy survey to set baselines</li><li><b>Within 6 months:</b> first rental auction, to show early results</li></ul></div>
+  </div>
+  <div class="foot"><span class="src">Full case write-up, data and analysis code: github.com/itsaminzare/uk-high-street-turnaround</span><span>12</span></div>
+</section>
+
+<!-- 13 -->
+<section class="s">
+  <div class="tracker">Sources</div>
+  <h1 class="t">All figures come from public sources</h1>
+  <div class="body src-list">
+    <p><b>Online share of retail.</b> ONS Retail Sales Index, series J4MC (internet sales as % of total retail sales), annual averages; release of 22 May 2026 as reported by Eightx.</p>
+    <p><b>Store closures and job losses.</b> Centre for Retail Research, 2018–2024 actual and 2025 forecast, via Insight DIY (31 Dec 2024).</p>
+    <p><b>Vacancy by location and region.</b> BRC–Local Data Company Vacancy Monitor, Q3 2021–Q4 2023, via Insight DIY, Bira, Furniture News and Green Street News.</p>
+    <p><b>Footfall.</b> BRC–Sensormatic IQ footfall monitor, published 9 January 2026.</p>
+    <p><b>Business rates, England.</b> Retail, hospitality and leisure relief 2024/25–2025/26 (Armstrong Watson, May 2025); 2026/27 multipliers (Spelthorne Borough Council).</p>
+    <p><b>Retail space, spending mix, policy.</b> Centre for Cities, <i>Checking out: the varying performance of high streets across the country</i> (July 2025), via Specification Online.</p>
+    <p><b>High Street Rental Auctions.</b> In force in England from 2 December 2024 (Trowers &amp; Hamlins summary).</p>
+    <p><b>About this case.</b> Northbridge is an illustrative composite town, not a real client. Figures from secondary reports should be checked against the original publisher before formal use. Independent project; not affiliated with any consultancy.</p>
+  </div>
+  <div class="foot"><span class="src">Links to every source: analysis/data/SOURCES.md in the GitHub repository.</span><span>13</span></div>
+</section>
+</body></html>

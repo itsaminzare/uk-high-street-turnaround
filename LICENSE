@@ -1,0 +1,14 @@
+Copyright (c) 2026 Mohammadamin Zare. All rights reserved.
+
+This repository (the case write-up, analysis code, charts, slide deck and the Issue Tree
+Studio tool) is published for viewing and evaluation only.
+
+No permission is granted to copy, modify, distribute, publish, sublicense, sell, or create
+derivative works from any part of it, in whole or in part, without prior written permission
+from the copyright holder.
+
+Third-party data in analysis/data/ remains the property of its original publishers, credited
+in analysis/data/SOURCES.md. Fonts in deck/source/ (IBM Plex Sans, Source Serif 4) are used
+under the SIL Open Font License.
+
+Permission requests: mohammadamin.zare.25@ucl.ac.uk

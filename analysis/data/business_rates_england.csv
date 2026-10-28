@@ -1,0 +1,6 @@
+year,multiplier_name,pence_per_pound,rhl_relief_pct,notes
+2024/25,Small business,49.9,75,RHL relief 75% (cap £110k per business)
+2025/26,Small business,49.9,40,RHL relief cut to 40% (cap £110k per business)
+2026/27,Small business RHL (RV under £51k),38.2,0,Relief replaced by permanently lower RHL multiplier
+2026/27,Standard RHL (RV £51k-£499,999),43.0,0,
+2026/27,Large property (RV £500k+),50.8,0,Applies to all properties incl. RHL
